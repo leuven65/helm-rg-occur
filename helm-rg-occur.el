@@ -32,7 +32,7 @@
 (with-eval-after-load 'helm-grep
 
   ;; use helm-do-grep-ag to search on dir
-  (defun my-helm-do-grep-rg-on-dir (dir &optional arg input-idle-delay)
+  (defun helm-rg-occur-do-grep-rg-on-dir (dir &optional arg input-idle-delay)
     "grep on the dir"
     (let ((default-directory dir)
           ;; also set `helm-ff-default-directory' to avoid problem when call this command on first time
@@ -42,7 +42,7 @@
       (helm-do-grep-ag arg)))
 
   ;; use helm-do-grep-ag to search on single file
-  (defun my-helm-do-grep-rg-on-file (&optional file-name)
+  (defun helm-rg-occur (&optional file-name)
     "Use rg to do grep on file"
     (interactive)
     (setq file-name (or file-name (buffer-file-name)))
@@ -55,32 +55,32 @@
 
   ;; extend `helm-swoop'
   (with-eval-after-load 'helm-swoop
-    (defun my-helm-swoop (&optional parg)
+    (defun helm-swoop-with-rg-occur (&optional parg)
       (interactive "P")
       (if (and (buffer-file-name)
                (or parg                                 ;if C-u
                    (> (buffer-size) helm-rg-occur-file-size))) ;if file is large than `helm-rg-occur-file-size'
-          (my-helm-do-grep-rg-on-file)            ;use rg to do search
+          (helm-rg-occur)            ;use rg to do search
         (helm-swoop :multiline nil))
       )
 
     ;; rebind the command
-    (global-set-key [remap helm-swoop] #'my-helm-swoop)
+    (global-set-key [remap helm-swoop] #'helm-swoop-with-rg-occur)
     )
 
   ;; extend `helm-occur'
   (with-eval-after-load 'helm-occur
-    (defun my-helm-occur (&optional parg)
+    (defun helm-occur-with-rg-occur (&optional parg)
       (interactive "P")
       (if (and (buffer-file-name)
                (or parg                                 ;if C-u
                    (> (buffer-size) helm-rg-occur-file-size))) ;if file is large than `helm-rg-occur-file-size'
-          (my-helm-do-grep-rg-on-file)            ;use rg to do search
+          (helm-rg-occur)            ;use rg to do search
         (helm-occur))
       )
 
     ;; rebind the command
-    (global-set-key [remap helm-swoop] #'helm-occur)
+    (global-set-key [remap helm-swoop] #'helm-occur-with-rg-occur)
     )
   )
 
