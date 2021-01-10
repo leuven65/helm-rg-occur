@@ -1,0 +1,46 @@
+# -*- coding: utf-8; org-download-method: directory; org-download-image-dir: "./image"; -*-
+#+TITLE: helm-rg-occur
+#+AUTHOR: Jian Wang
+#+DATE: 2021-01-10
+
+* About
+~helm-rg-occur~ is elisp package to enhance the performace of ~helm-swoop~
+[[https://github.com/emacsorphanage/helm-swoop]] and ~helm-occur~ [[https://github.com/emacs-helm/helm]] on
+large size file, by using the ripgrep to do the grep on the file content.
+
+If the file is in large size, such as 10M, both ~helm-swoop~ or ~helm-occur~ is quite slow, and
+Emacs will be blocked. But with ~helm-rg-occur~, it is quite fast, and no performance issue.
+
+** Snapshot
+#+DOWNLOADED: screenshot @ 2021-01-10 20:20:51
+[[./image/2021-01-10_20-20-51_screenshot.png]]
+
+* Installation
+** pre-require
+~helm~ is needed.
+
+** install
+1. Clone this git repo to "${user-emacs-directory}/packages/helm-rg-occur", and add folowing lines to
+   your Emacs config file:
+   #+begin_src emacs-lisp
+     (use-package helm-rg-occur
+       :after (helm)
+       :ensure nil ; it is github package
+       ;; If the path is relative, it is expanded within `user-emacs-directory'
+       :load-path "packages/helm-rg-occur"
+       :custom
+       (helm-rg-occur-file-size (* 2 1024 1024)) ; 2M
+       )
+   #+end_src
+
+* Usage
+** Command
+1. ~helm-rg-occur~ is the major command, which will use ~rg~ to do the grep on current file.
+2. ~helm-swoop-with-rg-occur~ is to replace the command ~helm-swoop~. \\
+   The command "helm-swoop" in global keymap is rebound to this command.
+3. ~helm-occur-with-rg-occur~ is to replace the command ~helm-occur~. \\
+   The command "helm-occur" in global keymap is rebound to this command.
+
+** Variable
+If file size is larger than ~helm-rg-occur-file-size~, both ~helm-swoop-with-rg-occur~ and
+~helm-occur-with-rg-occur~ will switch to use ~helm-rg-occur~ for improving the performace.
